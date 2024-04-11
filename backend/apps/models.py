@@ -23,9 +23,9 @@ class Contact(BaseModel):
     company = models.CharField(max_length=20, null=True, blank=True)
     position = models.CharField(max_length=20, null=True, blank=True)
     memo = models.TextField(null=True, blank=True)
-    address = models.CharField(max_length=200, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
     birthday = models.DateTimeField(null=True, blank=True)
-    website = models.CharField(max_length=200, null=True, blank=True)
+    website = models.TextField(null=True, blank=True)
 
     class Meta:
         db_table = 'contact'
