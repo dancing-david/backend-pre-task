@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.paginator import Paginator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -12,13 +13,6 @@ from apps.models import Contact
 
 # Create your views here.
 
-class OrderManager:
-    previous_order = ''
-    order_desc = None
-
-
-order_manager = OrderManager()
-
 
 class ContactsAPIView(APIView):
     @swagger_auto_schema(tags=['연락처 검색'], query_serializer=ContactsSearchSerializer)
@@ -29,19 +23,19 @@ class ContactsAPIView(APIView):
         page_size = int(params.get('pagesize', 10))
 
         if order != 'id':
-            if order_manager.previous_order != order:
-                order_manager.previous_order = order
-                order_manager.order_desc = ''
+            if settings.PREVIOUS_ORDER != order:
+                settings.PREVIOUS_ORDER = order
+                settings.ORDER_DESC = ''
             else:
-                if order_manager.order_desc is None:
-                    order_manager.order_desc = ''
-                elif order_manager.order_desc == '':
-                    order_manager.order_desc = '-'
+                if settings.ORDER_DESC is None:
+                    settings.ORDER_DESC = ''
+                elif settings.ORDER_DESC == '':
+                    settings.ORDER_DESC = '-'
                 else:
-                    order_manager.order_desc = None
+                    settings.ORDER_DESC = None
                     order = 'id'
 
-        order_by = f'{order_manager.order_desc}{order}' if order_manager.order_desc else order
+        order_by = f'{settings.ORDER_DESC}{order}' if settings.ORDER_DESC else order
         contacts = Contact.objects.all().order_by(order_by)
         if contacts.exists():
             paginator = Paginator(contacts, page_size)
